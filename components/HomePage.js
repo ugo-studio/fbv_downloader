@@ -31,7 +31,7 @@ const HomePage = ({THEME, initialUrl, listenedUrl, shareData}) => {
 
   const [fetching, setFetching] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [links, setLinks] = useState(null);
+  const [links, setLinks] = useState('');
   const timeOut = 20000;
   const getDownloadLink = () => {
     if (!fetching) {
@@ -61,6 +61,7 @@ const HomePage = ({THEME, initialUrl, listenedUrl, shareData}) => {
         .catch(err => {
           setFetching(prev => prev === true && false);
           setSuccess(prev => prev === true && false);
+          setLinks('');
           ToastAndroid.showWithGravityAndOffset(
             err.message,
             ToastAndroid.LONG,
@@ -76,6 +77,7 @@ const HomePage = ({THEME, initialUrl, listenedUrl, shareData}) => {
         if (fetching) {
           setFetching(prev => prev === true && false);
           setSuccess(prev => prev === true && false);
+          setLinks('');
           if (!success) {
             ToastAndroid.showWithGravityAndOffset(
               'Network request failed',
@@ -100,6 +102,19 @@ const HomePage = ({THEME, initialUrl, listenedUrl, shareData}) => {
           placeholderTextColor="#A5A5A5"
           selectionColor="#1D58FF8C"
           defaultValue={shareData || listenedUrl || initialUrl || ''}
+          onSubmitEditing={() => getDownloadLink()}
+          onChangeText={value => {
+            if (
+              value === shareData ||
+              value === listenedUrl ||
+              value === initialUrl
+            ) {
+              setSuccess(true);
+            } else {
+              setFetching(prev => prev === true && false);
+              setSuccess(prev => prev === true && false);
+            }
+          }}
           style={[styles.textInput]}
         />
         {success ? (
